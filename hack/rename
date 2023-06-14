@@ -1,0 +1,36 @@
+#! /usr/bin/env ruby
+
+cloud = ARGV[0]
+
+root_dir = File.expand_path("..", __dir__)
+cloud_dir = File.join(root_dir, "public", cloud)
+
+clouds = ["aws", "azure", "gcp"]
+
+if !clouds.member?(cloud)
+  puts "#{cloud} not supported, did you mean: #{clouds.join(', ')}"
+  exit 1
+end
+
+def rename_aws(filename)
+  filename.
+    downcase.
+    gsub("_", "-").
+    gsub(/^arch-(alexa|aws|amazon)-/,"").
+    gsub("-64.svg", ".svg")
+end
+
+def rename_azure(filename)
+  filename.downcase.gsub(/^[0-9]+-icon-service-/, "")
+end
+
+def rename_gcp(filename)
+  filename.gsub("_", "-")
+end
+
+Dir.chdir(cloud_dir) do
+  Dir.glob("*").each do |old_name|
+    new_name = send(:"rename_#{cloud}", old_name)
+    File.rename(old_name, new_name)
+  end
+end
