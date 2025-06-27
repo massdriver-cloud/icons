@@ -16,21 +16,37 @@ def rename_aws(filename)
   filename.
     downcase.
     gsub("_", "-").
-    gsub(/^arch-(alexa|aws|amazon)-/,"").
-    gsub("-64.svg", ".svg")
+    gsub("-48.svg", ".svg").
+    gsub("-64.svg", ".svg")    
+end
+
+def recolor_aws(filename)
+  eyes_bleeding = "C925D1"
+  dont_sue_us_jeff = "FFB400"
+
+  content = File.read(filename)
+  content.gsub!(eyes_bleeding, dont_sue_us_jeff)
+  File.write(filename, content)
 end
 
 def rename_azure(filename)
   filename.downcase.gsub(/^[0-9]+-icon-service-/, "")
 end
 
+def recolor_azure(_)
+end
+
 def rename_gcp(filename)
   filename.gsub("_", "-")
+end
+
+def recolor_gcp(_)
 end
 
 Dir.chdir(cloud_dir) do
   Dir.glob("*").each do |old_name|
     new_name = send(:"rename_#{cloud}", old_name)
     File.rename(old_name, new_name)
+    send(:"recolor_#{cloud}", new_name)
   end
 end

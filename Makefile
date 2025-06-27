@@ -7,6 +7,7 @@ aws:
 	rm -rf public/$@
 	cd tmp && unzip ../src/$@.zip
 	mkdir -p public/$@
+	mv tmp/Resource-Icons*/*/*.svg public/$@
 	mv tmp/Architecture-Service-Icons*/*/64/*.svg public/$@
 	hack/rename $@
 
